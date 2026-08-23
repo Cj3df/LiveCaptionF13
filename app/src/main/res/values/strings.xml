@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Live Captions</string>
+    <string name="title_live_caption">Live Captions</string>
+    <string name="subtitle_device_optimized">Optimized for Samsung Galaxy F13 (High Accuracy Engine)</string>
+    <string name="status_ready">Ready to Caption</string>
+    <string name="status_running">Live Captions Active</string>
+    <string name="status_paused">Captions Paused</string>
+    <string name="status_error">Connection Error</string>
+    <string name="btn_start">Start Captions</string>
+    <string name="btn_stop">Stop Captions</string>
+    <string name="audio_source_label">Audio Source</string>
+    <string name="source_internal">Internal Audio (Videos, Reels, Games)</string>
+    <string name="source_mic">Microphone (Ambient Voice, Calls)</string>
+    <string name="api_settings">Cloud Speech Engine Settings</string>
+    <string name="api_key_label">Deepgram API Key</string>
+    <string name="api_key_hint">Enter Deepgram API Key</string>
+    <string name="api_key_desc">Deepgram Nova-2 provides sub-300ms ultra-accurate transcription. Free $200 credits available at deepgram.com.</string>
+    <string name="save_key">Save API Key</string>
+    <string name="language_label">Transcription Language</string>
+    <string name="overlay_settings">Floating Subtitle Settings</string>
+    <string name="font_size_label">Font Size</string>
+    <string name="opacity_label">Overlay Opacity</string>
+    <string name="permission_overlay_needed">Overlay Permission Required</string>
+    <string name="permission_mic_needed">Microphone Permission Required</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="waiting_for_speech">Listening for audio...</string>
+</resources>
