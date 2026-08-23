@@ -9,6 +9,7 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
+import okio.ByteString.Companion.toByteString
 import java.util.concurrent.TimeUnit
 
 class DeepgramLiveSttEngine(
@@ -102,7 +103,7 @@ class DeepgramLiveSttEngine(
     fun sendAudioChunk(buffer: ByteArray, readBytes: Int) {
         if (!isRunning || webSocket == null) return
         try {
-            val byteString = ByteString.of(buffer, 0, readBytes)
+            val byteString = buffer.toByteString(0, readBytes)
             webSocket?.send(byteString)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to send audio chunk", e)
