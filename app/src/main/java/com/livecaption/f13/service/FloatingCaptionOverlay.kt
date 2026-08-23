@@ -12,6 +12,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -77,7 +78,10 @@ class FloatingCaptionOverlay(
             y = 200 // Initial vertical margin from bottom
         }
 
-        val inflater = LayoutInflater.from(context)
+        // Use a themed context so theme attributes like ?selectableItemBackgroundBorderless
+        // resolve correctly when inflating from a Service context.
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_LiveCaptionF13)
+        val inflater = LayoutInflater.from(themedContext)
         val view = inflater.inflate(R.layout.layout_floating_caption, null)
         overlayView = view
 
