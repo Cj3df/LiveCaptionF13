@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 class DeepgramLiveSttEngine(
     private val apiKey: String,
-    private val language: String = "en",
+    private val language: String = "auto",
     private val callback: SpeechRecognitionCallback
 ) {
     companion object {
@@ -41,7 +41,11 @@ class DeepgramLiveSttEngine(
 
         isRunning = true
 
-        val url = "$BASE_WS_URL?encoding=linear16&sample_rate=$SAMPLE_RATE&channels=1&model=nova-2&smart_format=true&interim_results=true&endpointing=300&punctuate=true&language=$language"
+        // Build URL with language parameter
+        val languageParam = if (language == "auto") "" else "&language=$language"
+        val url = "$BASE_WS_URL?encoding=linear16&sample_rate=$SAMPLE_RATE&channels=1&model=nova-2&smart_format=true&interim_results=true&endpointing=300&punctuate=true$languageParam"
+
+        Log.d(TAG, "Connecting to Deepgram with URL: $url (language: $language)")
 
         val request = Request.Builder()
             .url(url)
@@ -50,7 +54,7 @@ class DeepgramLiveSttEngine(
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.d(TAG, "WebSocket connected successfully to Deepgram Nova-2")
+                Log.d(TAG, "WebSocket connected successfully to Deepgram Nova-2 (Language: $language)")
                 callback.onConnected()
             }
 
