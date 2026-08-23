@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.livecaption.f13.model.AudioSourceType
 import com.livecaption.f13.model.CaptionFontSize
+import com.livecaption.f13.model.Language
 
 class PreferenceHelper(context: Context) {
     private val prefs: SharedPreferences =
@@ -48,7 +49,14 @@ class PreferenceHelper(context: Context) {
         get() = prefs.getFloat(KEY_OPACITY, 0.90f)
         set(value) = prefs.edit().putFloat(KEY_OPACITY, value).apply()
 
-    var language: String
-        get() = prefs.getString(KEY_LANGUAGE, "en") ?: "en"
+    var language: Language
+        get() {
+            val code = prefs.getString(KEY_LANGUAGE, "auto") ?: "auto"
+            return Language.fromCode(code)
+        }
+        set(value) = prefs.edit().putString(KEY_LANGUAGE, value.code).apply()
+
+    var languageCode: String
+        get() = prefs.getString(KEY_LANGUAGE, "auto") ?: "auto"
         set(value) = prefs.edit().putString(KEY_LANGUAGE, value).apply()
 }
