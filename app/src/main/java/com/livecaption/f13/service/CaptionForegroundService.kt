@@ -32,6 +32,9 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         const val ACTION_STOP = "com.livecaption.f13.ACTION_STOP"
         const val ACTION_UPDATE_SETTINGS = "com.livecaption.f13.ACTION_UPDATE_SETTINGS"
 
+        const val EXTRA_RESULT_CODE = "extra_result_code"
+        const val EXTRA_RESULT_DATA = "extra_result_data"
+
         var isServiceRunning = false
             private set
 
