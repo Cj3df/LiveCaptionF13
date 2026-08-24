@@ -51,6 +51,8 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         createNotificationChannel()
     }
 
+    private var currentLanguageCode: String = ""
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.action ?: ACTION_START
 
@@ -69,6 +71,9 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
             }
             ACTION_UPDATE_SETTINGS -> {
                 overlay?.applyAppearance()
+                if (isServiceRunning && currentLanguageCode != prefHelper.languageCode) {
+                    restartSttEngine()
+                }
             }
             ACTION_STOP -> {
                 stopSelf()
@@ -139,8 +144,9 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         }
 
         // 3. Initialize STT Engine
+        currentLanguageCode = prefHelper.languageCode
         val apiKey = prefHelper.deepgramApiKey
-        sttEngine = DeepgramLiveSttEngine(apiKey, prefHelper.language, this)
+        sttEngine = DeepgramLiveSttEngine(apiKey, currentLanguageCode, this)
         sttEngine?.start()
 
         // 4. Initialize Audio Capture
@@ -158,15 +164,25 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         audioCaptureManager?.startCapture()
     }
 
+    private fun restartSttEngine() {
+        currentLanguageCode = prefHelper.languageCode
+        sttEngine?.stop()
+        overlay?.updateStatus("Switching language mode...", R.color.accent_blue)
+        val apiKey = prefHelper.deepgramApiKey
+        sttEngine = DeepgramLiveSttEngine(apiKey, currentLanguageCode, this)
+        sttEngine?.start()
+    }
+
     // --- SpeechRecognitionCallback implementations ---
 
     override fun onConnected() {
         val srcName = if (prefHelper.audioSource == AudioSourceType.INTERNAL) "Internal Audio" else "Microphone"
-        overlay?.updateStatus("Live Captions • $srcName", R.color.accent_green)
+        val langName = prefHelper.language.displayName
+        overlay?.updateStatus("Live Captions • $langName • $srcName", R.color.accent_green)
     }
 
-    override fun onTranscript(transcript: String, isFinal: Boolean, speechFinal: Boolean) {
-        overlay?.onNewTranscript(transcript, isFinal, speechFinal)
+    override fun onTranscript(transcript: String, isFinal: Boolean, speechFinal: Boolean, detectedLanguage: String?) {
+        overlay?.onNewTranscript(transcript, isFinal, speechFinal, detectedLanguage)
     }
 
     override fun onError(errorMessage: String) {

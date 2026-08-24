@@ -19,9 +19,10 @@ enum class ServiceState {
 }
 
 enum class Language(val code: String, val displayName: String) {
+    AUTO("auto", "Auto-Detect (Hindi + English)"),
     ENGLISH("en", "English"),
     HINDI("hi", "हिंदी (Hindi)"),
-    AUTO("auto", "Auto-Detect"),
+    HINGLISH("hi-Latn", "Hinglish (Hindi / English Latin)"),
     SPANISH("es", "Español"),
     FRENCH("fr", "Français"),
     GERMAN("de", "Deutsch"),
@@ -37,7 +38,8 @@ enum class Language(val code: String, val displayName: String) {
 
     companion object {
         fun fromCode(code: String?): Language {
-            return values().find { it.code == code } ?: ENGLISH
+            if (code.isNullOrBlank() || code == "auto" || code == "multi") return AUTO
+            return values().find { it.code.equals(code, ignoreCase = true) } ?: AUTO
         }
 
         fun getDisplayNames(): List<String> {

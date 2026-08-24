@@ -41,9 +41,12 @@ class DeepgramLiveSttEngine(
 
         isRunning = true
 
-        // Build URL with language parameter
-        val languageParam = if (language == "auto") "" else "&language=$language"
-        val url = "$BASE_WS_URL?encoding=linear16&sample_rate=$SAMPLE_RATE&channels=1&model=nova-2&smart_format=true&interim_results=true&endpointing=300&punctuate=true$languageParam"
+        // For auto-detection / multilingual (Hindi + English code-switching), use language=multi with endpointing=100
+        val isMultilingual = language.equals("auto", ignoreCase = true) || language.equals("multi", ignoreCase = true)
+        val endpointing = if (isMultilingual || language.equals("hi", ignoreCase = true)) "100" else "300"
+        val languageParam = if (isMultilingual) "&language=multi" else "&language=$language"
+
+        val url = "$BASE_WS_URL?encoding=linear16&sample_rate=$SAMPLE_RATE&channels=1&model=nova-2&smart_format=true&interim_results=true&endpointing=$endpointing&punctuate=true$languageParam"
 
         Log.d(TAG, "Connecting to Deepgram with URL: $url (language: $language)")
 
@@ -70,8 +73,23 @@ class DeepgramLiveSttEngine(
                             val isFinal = root.get("is_final")?.asBoolean ?: false
                             val speechFinal = root.get("speech_final")?.asBoolean ?: false
 
+                            // Extract detected language if provided by Deepgram
+                            var detectedLang: String? = null
+                            if (firstAlt.has("languages")) {
+                                val langsArray = firstAlt.getAsJsonArray("languages")
+                                if (langsArray != null && langsArray.size() > 0) {
+                                    detectedLang = langsArray.get(0).asString
+                                }
+                            }
+                            if (detectedLang == null && firstAlt.has("detected_language")) {
+                                detectedLang = firstAlt.get("detected_language")?.asString
+                            }
+                            if (detectedLang == null && root.has("detected_language")) {
+                                detectedLang = root.get("detected_language")?.asString
+                            }
+
                             if (transcript.isNotBlank()) {
-                                callback.onTranscript(transcript, isFinal, speechFinal)
+                                callback.onTranscript(transcript, isFinal, speechFinal, detectedLang)
                             }
                         }
                     }

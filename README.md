@@ -11,12 +11,14 @@ Designed and optimized specifically for the **Samsung Galaxy F13** (running One 
    - Captures digital sound directly from YouTube, Instagram Reels, Netflix, Chrome, Twitter/X, Podcasts, and Games without ambient room noise.
 2. **Microphone Fallback Mode**
    - Allows captioning in-person conversations, ambient lectures, or speakerphone calls.
-3. **High-Accuracy Cloud Speech Engine (Deepgram Nova-2)**
-   - Sub-300ms ultra-low streaming latency.
+3. **High-Accuracy Cloud Speech Engine (Deepgram Nova-2 Multilingual)**
+   - **Auto Language Detection & Code-Switching**: Automatically detects whether speakers are speaking in **Hindi (हिन्दी)**, **English**, or **mixed Hinglish** in real time.
+   - Sub-300ms ultra-low streaming latency with adaptive endpointing.
    - Automatic punctuation, capitalization, number formatting, and smart formatting.
-   - Supports English, Hindi, and 30+ languages.
+   - Multiple language modes: *Auto Detect (Hindi + English Multilingual)*, *English Only*, *Hindi Only (Devanagari)*, and *Hinglish (Latin script)*.
 4. **Draggable & Customizable Floating Subtitles**
    - System overlay window (`SYSTEM_ALERT_WINDOW`) that floats over any active app.
+   - Real-time language detection badge indicator (e.g. `[HI]`, `[EN]`).
    - Drag to reposition anywhere on the screen.
    - Adjustable font sizes (Small / Medium / Large).
    - Adjustable background transparency / opacity (30% to 100%).

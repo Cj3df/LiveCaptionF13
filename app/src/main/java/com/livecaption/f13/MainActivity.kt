@@ -89,6 +89,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Language & Speech Detection Selection
+        binding.radioGroupLanguage.setOnCheckedChangeListener { _, checkedId ->
+            val selectedLang = when (checkedId) {
+                R.id.rbLangAutoMulti -> com.livecaption.f13.model.Language.AUTO
+                R.id.rbLangEnglish -> com.livecaption.f13.model.Language.ENGLISH
+                R.id.rbLangHindi -> com.livecaption.f13.model.Language.HINDI
+                R.id.rbLangHinglish -> com.livecaption.f13.model.Language.HINGLISH
+                else -> com.livecaption.f13.model.Language.AUTO
+            }
+            prefHelper.language = selectedLang
+            notifySettingsChanged()
+        }
+
         // Save API Key
         binding.btnSaveApiKey.setOnClickListener {
             val key = binding.etApiKey.text.toString().trim()
@@ -129,6 +142,15 @@ class MainActivity : AppCompatActivity() {
             binding.rbInternalAudio.isChecked = true
         } else {
             binding.rbMicrophone.isChecked = true
+        }
+
+        // Language
+        when (prefHelper.language) {
+            com.livecaption.f13.model.Language.AUTO -> binding.rbLangAutoMulti.isChecked = true
+            com.livecaption.f13.model.Language.ENGLISH -> binding.rbLangEnglish.isChecked = true
+            com.livecaption.f13.model.Language.HINDI -> binding.rbLangHindi.isChecked = true
+            com.livecaption.f13.model.Language.HINGLISH -> binding.rbLangHinglish.isChecked = true
+            else -> binding.rbLangAutoMulti.isChecked = true
         }
 
         // Font Size

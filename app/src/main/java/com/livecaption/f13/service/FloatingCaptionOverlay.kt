@@ -148,8 +148,21 @@ class FloatingCaptionOverlay(
         }
     }
 
-    fun onNewTranscript(transcript: String, isFinal: Boolean, speechFinal: Boolean) {
+    fun onNewTranscript(transcript: String, isFinal: Boolean, speechFinal: Boolean, detectedLanguage: String? = null) {
         mainHandler.post {
+            // Update detected language badge in status if provided
+            if (!detectedLanguage.isNullOrBlank()) {
+                val langTag = when (detectedLanguage.lowercase()) {
+                    "hi" -> "Hindi [HI]"
+                    "en" -> "English [EN]"
+                    "hi-latn" -> "Hinglish [HI-EN]"
+                    else -> detectedLanguage.uppercase()
+                }
+                val srcName = if (prefHelper.audioSource == com.livecaption.f13.model.AudioSourceType.INTERNAL) "Internal Audio" else "Microphone"
+                tvStatus?.text = "Live Captions • $langTag • $srcName"
+                tvStatus?.setTextColor(ContextCompat.getColor(context, R.color.accent_green))
+            }
+
             if (isFinal) {
                 if (finalizedHistory.isNotEmpty()) {
                     finalizedHistory.append(" ")
