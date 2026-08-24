@@ -34,7 +34,8 @@ class DeepgramLiveSttEngine(
 
     fun start() {
         if (isRunning) return
-        if (apiKey.isBlank()) {
+        val cleanApiKey = apiKey.trim().replace("\n", "").replace("\r", "").replace(" ", "")
+        if (cleanApiKey.isBlank()) {
             callback.onError("Deepgram API Key is missing. Please set it in app settings.")
             return
         }
@@ -52,7 +53,7 @@ class DeepgramLiveSttEngine(
 
         val request = Request.Builder()
             .url(url)
-            .addHeader("Authorization", "Token $apiKey")
+            .addHeader("Authorization", "Token $cleanApiKey")
             .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {

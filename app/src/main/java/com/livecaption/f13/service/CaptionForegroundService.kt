@@ -66,7 +66,10 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
                     intent?.getParcelableExtra(EXTRA_RESULT_DATA)
                 }
 
-                startForegroundServiceWithNotification()
+                val sourceType = prefHelper.audioSource
+                val hasMediaProjection = (sourceType == AudioSourceType.INTERNAL && resultCode != 0 && resultData != null)
+
+                startForegroundServiceWithNotification(sourceType, hasMediaProjection)
                 initializeServices(resultCode, resultData)
             }
             ACTION_UPDATE_SETTINGS -> {
@@ -83,7 +86,7 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         return START_NOT_STICKY
     }
 
-    private fun startForegroundServiceWithNotification() {
+    private fun startForegroundServiceWithNotification(sourceType: AudioSourceType, hasMediaProjection: Boolean) {
         val stopIntent = Intent(this, CaptionForegroundService::class.java).apply {
             action = ACTION_STOP
         }
@@ -115,12 +118,20 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-            } else {
+            val type = if (sourceType == AudioSourceType.INTERNAL && hasMediaProjection) {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+                } else {
+                    0
+                }
             }
-            startForeground(NOTIFICATION_ID, notification, type)
+            if (type != 0) {
+                startForeground(NOTIFICATION_ID, notification, type)
+            } else {
+                startForeground(NOTIFICATION_ID, notification)
+            }
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }

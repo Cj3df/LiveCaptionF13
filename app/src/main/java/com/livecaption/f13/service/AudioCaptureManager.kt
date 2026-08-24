@@ -57,6 +57,17 @@ class AudioCaptureManager(
                 .build()
 
             audioRecord = if (sourceType == AudioSourceType.INTERNAL && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mediaProjection != null) {
+                // Register callback for Android 14+ compliance
+                try {
+                    mediaProjection.registerCallback(object : MediaProjection.Callback() {
+                        override fun onStop() {
+                            Log.d(TAG, "MediaProjection stopped")
+                        }
+                    }, null)
+                } catch (e: Exception) {
+                    Log.w(TAG, "MediaProjection callback registration note: ${e.message}")
+                }
+
                 // Internal Media Audio Capture (Android 10+)
                 val playbackConfig = AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
                     .addMatchingUsage(AudioAttributes.USAGE_MEDIA)

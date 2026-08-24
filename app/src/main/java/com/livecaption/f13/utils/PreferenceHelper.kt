@@ -21,7 +21,7 @@ class PreferenceHelper(context: Context) {
 
     var deepgramApiKey: String
         get() = prefs.getString(KEY_API_KEY, "") ?: ""
-        set(value) = prefs.edit().putString(KEY_API_KEY, value.trim()).apply()
+        set(value) = prefs.edit().putString(KEY_API_KEY, value.trim().replace("\n", "").replace("\r", "").replace(" ", "")).apply()
 
     var audioSource: AudioSourceType
         get() {

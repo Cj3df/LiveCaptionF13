@@ -104,8 +104,9 @@ class MainActivity : AppCompatActivity() {
 
         // Save API Key
         binding.btnSaveApiKey.setOnClickListener {
-            val key = binding.etApiKey.text.toString().trim()
+            val key = binding.etApiKey.text.toString().trim().replace("\n", "").replace("\r", "").replace(" ", "")
             prefHelper.deepgramApiKey = key
+            binding.etApiKey.setText(key)
             Toast.makeText(this, "API Key saved", Toast.LENGTH_SHORT).show()
         }
 
