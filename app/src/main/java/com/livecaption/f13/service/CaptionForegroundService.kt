@@ -32,11 +32,15 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
         const val ACTION_STOP = "com.livecaption.f13.ACTION_STOP"
         const val ACTION_UPDATE_SETTINGS = "com.livecaption.f13.ACTION_UPDATE_SETTINGS"
 
-        const val EXTRA_RESULT_CODE = "extra_result_code"
-        const val EXTRA_RESULT_DATA = "extra_result_data"
-
         var isServiceRunning = false
             private set
+
+        val sessionTranscriptBuffer = StringBuilder()
+        val sessionTimestampedCaptions = mutableListOf<com.livecaption.f13.utils.TimestampedCaption>()
+        var sessionStartTimeMs: Long = 0L
+
+        fun getSessionText(): String = sessionTranscriptBuffer.toString()
+        fun getSessionCaptions(): List<com.livecaption.f13.utils.TimestampedCaption> = sessionTimestampedCaptions.toList()
     }
 
     private lateinit var prefHelper: PreferenceHelper
@@ -140,6 +144,10 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
     }
 
     private fun initializeServices(resultCode: Int, resultData: Intent?) {
+        sessionStartTimeMs = System.currentTimeMillis()
+        sessionTranscriptBuffer.clear()
+        sessionTimestampedCaptions.clear()
+
         // 1. Initialize Floating Overlay
         overlay = FloatingCaptionOverlay(this) {
             stopSelf()
@@ -194,6 +202,25 @@ class CaptionForegroundService : Service(), SpeechRecognitionCallback {
 
     override fun onTranscript(transcript: String, isFinal: Boolean, speechFinal: Boolean, detectedLanguage: String?) {
         overlay?.onNewTranscript(transcript, isFinal, speechFinal, detectedLanguage)
+        if (isFinal) {
+            val clean = transcript.trim()
+            if (clean.isNotBlank()) {
+                if (sessionTranscriptBuffer.isNotEmpty()) {
+                    sessionTranscriptBuffer.append(" ")
+                }
+                sessionTranscriptBuffer.append(clean)
+
+                val elapsed = System.currentTimeMillis() - sessionStartTimeMs
+                val durationEst = (clean.split(" ").size * 400L).coerceAtLeast(1500L)
+                sessionTimestampedCaptions.add(
+                    com.livecaption.f13.utils.TimestampedCaption(
+                        startMs = (elapsed - durationEst).coerceAtLeast(0L),
+                        endMs = elapsed,
+                        text = clean
+                    )
+                )
+            }
+        }
     }
 
     override fun onError(errorMessage: String) {

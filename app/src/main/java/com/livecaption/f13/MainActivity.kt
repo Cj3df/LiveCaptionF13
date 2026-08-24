@@ -132,6 +132,29 @@ class MainActivity : AppCompatActivity() {
                 notifySettingsChanged()
             }
         }
+
+        // Transcript Export & Copy Handlers
+        binding.btnCopyTranscript.setOnClickListener {
+            val text = CaptionForegroundService.getSessionText()
+            com.livecaption.f13.utils.TranscriptExporter.copyToClipboard(this, text)
+        }
+
+        binding.btnExportTxt.setOnClickListener {
+            val text = CaptionForegroundService.getSessionText()
+            com.livecaption.f13.utils.TranscriptExporter.exportToTxt(this, text)
+        }
+
+        binding.btnExportSrt.setOnClickListener {
+            val captions = CaptionForegroundService.getSessionCaptions()
+            com.livecaption.f13.utils.TranscriptExporter.exportToSrt(this, captions)
+        }
+
+        binding.btnShareTranscript.setOnClickListener {
+            val text = CaptionForegroundService.getSessionText()
+            val captions = CaptionForegroundService.getSessionCaptions()
+            val srtFile = if (captions.isNotEmpty()) com.livecaption.f13.utils.TranscriptExporter.exportToSrt(this, captions) else null
+            com.livecaption.f13.utils.TranscriptExporter.shareTranscript(this, text, srtFile)
+        }
     }
 
     private fun loadSavedPreferences() {

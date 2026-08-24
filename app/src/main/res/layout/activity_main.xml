@@ -440,6 +440,117 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Transcript Export & Tools Card -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="TRANSCRIPT &amp; EXPORT"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Save &amp; Export Options"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Export full session subtitles as .SRT or plain text .TXT into your Downloads/LiveCaptions folder."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCopyTranscript"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:text="Copy Text"
+                            android:textColor="@color/text_primary"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_copy"
+                            app:iconTint="@color/accent_blue" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExportTxt"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="Save .TXT"
+                            android:textColor="@color/text_primary"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_save"
+                            app:iconTint="@color/accent_green" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExportSrt"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:text="Save .SRT"
+                            android:textColor="@color/text_primary"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_save"
+                            app:iconTint="@color/accent_green" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShareTranscript"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="Share"
+                            android:textColor="@color/text_primary"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_share"
+                            app:iconTint="@color/accent_blue" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

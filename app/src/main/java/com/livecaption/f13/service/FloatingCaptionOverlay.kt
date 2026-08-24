@@ -49,6 +49,11 @@ class FloatingCaptionOverlay(
     private var finalizedHistory = StringBuilder()
     private var currentInterim = ""
 
+    // Full session storage for complete Copy & TXT/SRT Export
+    private val sessionFullTranscript = StringBuilder()
+    private val sessionTimestampedCaptions = mutableListOf<com.livecaption.f13.utils.TimestampedCaption>()
+    private var sessionStartTimeMs = System.currentTimeMillis()
+
     private var initialX = 0
     private var initialY = 0
     private var initialTouchX = 0f
@@ -57,6 +62,8 @@ class FloatingCaptionOverlay(
     @SuppressLint("ClickableViewAccessibility", "InflateParams")
     fun show() {
         if (overlayView != null) return
+
+        sessionStartTimeMs = System.currentTimeMillis()
 
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -91,11 +98,31 @@ class FloatingCaptionOverlay(
         scrollView = view.findViewById(R.id.captionScrollView)
 
         val headerBar = view.findViewById<View>(R.id.headerBar)
-        val btnClose = view.findViewById<ImageView>(R.id.btnOverlayClose)
+        val btnCopy = view.findViewById<ImageView>(R.id.btnOverlayCopy)
+        val btnSave = view.findViewById<ImageView>(R.id.btnOverlaySave)
         val btnClear = view.findViewById<ImageView>(R.id.btnOverlayClear)
+        val btnClose = view.findViewById<ImageView>(R.id.btnOverlayClose)
 
         // Apply saved visual styles
         applyAppearance()
+
+        // Copy transcript button
+        btnCopy.setOnClickListener {
+            val textToCopy = if (sessionFullTranscript.isNotEmpty()) sessionFullTranscript.toString() else finalizedHistory.toString()
+            if (com.livecaption.f13.utils.TranscriptExporter.copyToClipboard(context, textToCopy)) {
+                updateStatus("✓ Copied to clipboard!", R.color.accent_green)
+            }
+        }
+
+        // Save & Export transcript button (Saves .txt and .srt to Downloads/LiveCaptions)
+        btnSave.setOnClickListener {
+            val textToSave = if (sessionFullTranscript.isNotEmpty()) sessionFullTranscript.toString() else finalizedHistory.toString()
+            val txtFile = com.livecaption.f13.utils.TranscriptExporter.exportToTxt(context, textToSave)
+            val srtFile = com.livecaption.f13.utils.TranscriptExporter.exportToSrt(context, sessionTimestampedCaptions)
+            if (txtFile != null || srtFile != null) {
+                updateStatus("✓ Saved to Downloads!", R.color.accent_green)
+            }
+        }
 
         // Dragging logic
         headerBar.setOnTouchListener { _, event ->
@@ -164,10 +191,29 @@ class FloatingCaptionOverlay(
             }
 
             if (isFinal) {
+                val cleanText = transcript.trim()
+                if (cleanText.isNotBlank()) {
+                    if (sessionFullTranscript.isNotEmpty()) {
+                        sessionFullTranscript.append(" ")
+                    }
+                    sessionFullTranscript.append(cleanText)
+
+                    val now = System.currentTimeMillis()
+                    val elapsed = now - sessionStartTimeMs
+                    val durationEstimate = (cleanText.split(" ").size * 400L).coerceAtLeast(1500L)
+                    sessionTimestampedCaptions.add(
+                        com.livecaption.f13.utils.TimestampedCaption(
+                            startMs = (elapsed - durationEstimate).coerceAtLeast(0L),
+                            endMs = elapsed,
+                            text = cleanText
+                        )
+                    )
+                }
+
                 if (finalizedHistory.isNotEmpty()) {
                     finalizedHistory.append(" ")
                 }
-                finalizedHistory.append(transcript.trim())
+                finalizedHistory.append(cleanText)
 
                 // Truncate oldest sentences if history becomes too long
                 if (finalizedHistory.length > MAX_HISTORY_LENGTH) {
@@ -239,8 +285,12 @@ class FloatingCaptionOverlay(
     fun clearCaptions() {
         mainHandler.post {
             finalizedHistory.clear()
+            sessionFullTranscript.clear()
+            sessionTimestampedCaptions.clear()
+            sessionStartTimeMs = System.currentTimeMillis()
             currentInterim = ""
             tvCaptionText?.text = context.getString(R.string.waiting_for_speech)
+            updateStatus("Captions Cleared", R.color.accent_blue)
         }
     }
 

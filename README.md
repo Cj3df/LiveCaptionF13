@@ -23,7 +23,12 @@ Designed and optimized specifically for the **Samsung Galaxy F13** (running One 
    - Adjustable font sizes (Small / Medium / Large).
    - Adjustable background transparency / opacity (30% to 100%).
    - Live streaming text: Finalized text in bold white, interim speech in italicized light gray.
-5. **Samsung One UI Background Optimization**
+5. **Save, Export & Copy Transcripts (.TXT & .SRT Subtitles)**
+   - **One-Tap Quick Copy**: Instant copy button directly on the floating overlay header and main app.
+   - **Export as Plain Text (.TXT)**: Saves complete session transcripts into `Downloads/LiveCaptions`.
+   - **Export as Subtitles (.SRT)**: Generates timestamped subtitle files ready for VLC, YouTube, and video players.
+   - **Direct Share**: Send transcripts directly to WhatsApp, Google Drive, Notes, or Email via system share sheet.
+6. **Samsung One UI Background Optimization**
    - Runs as a Foreground Service with notification controls (`Start`, `Pause`, `Stop`) so Samsung's background app killer does not terminate the captions mid-video.
 
 ---

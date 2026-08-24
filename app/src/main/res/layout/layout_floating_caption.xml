@@ -38,12 +38,33 @@
             android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/btnOverlayCopy"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="Copy Transcript"
+            android:padding="2dp"
+            android:src="@drawable/ic_copy" />
+
+        <ImageView
+            android:id="@+id/btnOverlaySave"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="Save Transcript"
+            android:padding="2dp"
+            android:src="@drawable/ic_save" />
+
+        <ImageView
             android:id="@+id/btnOverlayClear"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="Clear"
+            android:padding="2dp"
             android:src="@drawable/ic_settings" />
 
         <ImageView
@@ -52,6 +73,7 @@
             android:layout_height="22dp"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="Close"
+            android:padding="2dp"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
